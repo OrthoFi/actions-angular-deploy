@@ -1,0 +1,74 @@
+name: 'Deploy Angular'
+description: 'Deploy an Angular application. Intended to be used in conjunction with -build, and -test.'
+
+inputs:
+  repository:
+    description: 'Which Angular repository are we deploying?'
+    required: true
+  app-name:
+    description: 'App name. Used for param store lookups.'
+    required: true
+  target-environment:
+    description: 'Where are we deploying this?'
+    required: true
+  build-role-dev:
+    description: 'The relevant dev build role for AWS stuff.'
+    required: true
+  build-role-prod:
+    description: 'The relevant production build role for AWS stuff.'
+    required: true
+  aws-access-key-id:
+    description: 'AWS access key!'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS access key, but more secreter!'
+    required: true
+  aws-region:
+    description: 'Regionality of the AWS credentialing'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Build Role
+      id: set-role
+      uses: orthofi/actions-set-build-role@v1
+      with:
+        production-role: ${{ inputs.build-role-prod }}
+        dev-role: ${{ inputs.build-role-dev }}
+        environment-name: ${{ inputs.target-environment }}
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ steps.set-role.outputs.build-role }}
+
+    - name: Get App Config
+      uses: orthofi/actions-aws-ssm-get-by-path@v1
+      with:
+        paths: ${{ format('/app/{0}/env/{1}/', inputs.app-name, inputs.target-environment) }}
+        save-to-environment: true
+        prefix: APP_
+        file: .env
+
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: client
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ steps.set-role.outputs.build-role }}
+
+#    - name: Upload to S3
+#      run: aws s3 sync . "s3://${APP_BUCKET}"
+
+    - name: Invalidate Cloudfront
+      run: aws cloudfront create-invalidation --distribution-id ${APP_CLOUDFRONT_ID} --paths "/*"
