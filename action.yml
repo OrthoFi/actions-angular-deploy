@@ -71,5 +71,5 @@ runs:
 #      run: aws s3 sync . "s3://${APP_BUCKET}"
 
     - name: Invalidate Cloudfront
-      shell: cmd
+      shell: pwsh
       run: aws cloudfront create-invalidation --distribution-id ${APP_CLOUDFRONT_ID} --paths "/*"
