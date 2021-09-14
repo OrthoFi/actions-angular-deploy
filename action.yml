@@ -49,7 +49,7 @@ runs:
     - name: Get App Config
       uses: orthofi/actions-aws-ssm-get-by-path@v1
       with:
-        paths: ${{ format('/app/{0},app/{0}/env/{1}/', inputs.app-name, inputs.target-environment) }}
+        paths: ${{ format('/app/{0},/app/{0}/env/{1}/', inputs.app-name, inputs.target-environment) }}
         save-to-environment: true
         prefix: APP_
 
