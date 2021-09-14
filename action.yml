@@ -71,4 +71,4 @@ runs:
 
     - name: Invalidate Cloudfront
       shell: pwsh
-      run: aws cloudfront create-invalidation --distribution-id ${APP_CLOUDFRONT_ID} --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{ APP_CLOUDFRONT_ID }} --paths "/*"
