@@ -64,7 +64,7 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
-        role-to-assume: ${{ inputs.aws-role-prod }}
+        role-to-assume: ${{ inputs.aws-role-dev }}
 
 #    - name: Upload to S3
 #      run: aws s3 sync . "s3://${APP_BUCKET}"
