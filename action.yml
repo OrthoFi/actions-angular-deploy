@@ -67,6 +67,7 @@ runs:
         role-to-assume: ${{ inputs.aws-role-dev }}
 
     - name: Upload to S3
+      shell: bash
       run: aws s3 sync . "s3://${APP_BUCKET}"
 
     - name: Invalidate Cloudfront
