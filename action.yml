@@ -66,8 +66,8 @@ runs:
         aws-region: ${{ inputs.aws-region }}
         role-to-assume: ${{ inputs.aws-role-dev }}
 
-#    - name: Upload to S3
-#      run: aws s3 sync . "s3://${APP_BUCKET}"
+    - name: Upload to S3
+      run: aws s3 sync . "s3://${APP_BUCKET}"
 
     - name: Invalidate Cloudfront
       shell: bash
