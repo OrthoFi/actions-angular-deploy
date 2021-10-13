@@ -68,7 +68,7 @@ runs:
 
     - name: Upload to S3
       shell: bash
-      run: aws s3 sync . "s3://${APP_BUCKET}"
+      run: aws s3 sync . "s3://${APP_BUCKET}" --delete
 
     - name: Invalidate Cloudfront
       shell: bash
