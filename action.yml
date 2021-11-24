@@ -1,34 +1,34 @@
-name: 'Deploy Angular'
-description: 'Deploy an Angular application. Intended to be used in conjunction with -build, and -test.'
+name: Deploy Angular
+description: Deploy an Angular application. Intended to be used in conjunction with -build, and -test.
 
 inputs:
   repository:
-    description: 'Which Angular repository are we deploying?'
+    description: Which Angular repository are we deploying?
     required: true
   app-name:
-    description: 'App name. Used for param store lookups.'
+    description: App name. Used for param store lookups.
     required: true
   target-environment:
-    description: 'Where are we deploying this?'
+    description: Where are we deploying this?
     required: true
   aws-role-dev:
-    description: 'The relevant dev build role for AWS stuff.'
+    description: The relevant dev build role for AWS stuff.
     required: true
   aws-role-prod:
-    description: 'The relevant prod build role for AWS stuff.'
+    description: The relevant prod build role for AWS stuff.
     required: true
   aws-access-key-id:
-    description: 'AWS access key!'
+    description: AWS access key!
     required: true
   aws-secret-access-key:
-    description: 'AWS access key, but more secreter!'
+    description: AWS access key, but more secreter!
     required: true
   aws-region:
-    description: 'Regionality of the AWS credentialing'
+    description: Regionality of the AWS credentialing
     required: true
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Set Build Role
       id: set-role
@@ -44,7 +44,7 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
-        role-to-assume: ${{ inputs.aws-role-prod }}
+        role-to-assume: ${{ steps.set-role.outputs.build-role }}
 
     - name: Get App Config
       uses: orthofi/actions-aws-ssm-get-by-path@v1
