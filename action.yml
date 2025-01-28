@@ -47,7 +47,7 @@ runs:
         role-to-assume: ${{ steps.set-role.outputs.build-role }}
 
     - name: Get App Config
-      uses: orthofi/actions-aws-ssm-get-by-path@v1
+      uses: orthofi/actions-aws-ssm-get-by-path@v2
       with:
         paths: ${{ format('/app/{0}/,/app/{0}/env/{1}/', inputs.app-name, inputs.target-environment) }}
         save-to-environment: true
